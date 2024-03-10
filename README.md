@@ -93,3 +93,41 @@ Requirements:
 - You must use Go modules (no vendor directory).
 
 >__NOTE:__ Run the app with `go run .` or `go run main.go k8s.go util.go`.
+
+#### More Notes
+
+The app will create two Deployments containing a total of 4 Pods (two Deployments with two replicas for each). The
+deployed app is [Postgres]() but for the purposes of this assignment it could be anything. Deployments and Pods have
+the name "database" in them. The app can be run multiple times, the Deployments will only be created once.
+
+The app will query the cluster for Pods that have names which contain the word "database."
+
+It's important to note that the app obtains a list of Pods that match the search criteria and then queries for the
+Deployments (via ReplicaSets) that contain the Pods. It was done this way to accomodate performing a brutal replacement
+of ad-hoc Pods in the future. That is, you can only gracefully restart Pods that are part of ReplicaSets because it is
+the ReplicaSet that handles the creation of new Pods before the old ones are terminated.
+
+The way the __graceful restart__ is handled is that an Annotation is appended/updated on the target Deployments. This
+seemingly innocuous change is enough to tell the backend to rollout new Pods. The annotation looks like this:
+
+```text
+Annotations:      force/deploy: 2024-03-10 21:40:01.664627499 +0000 UTC
+```
+
+The value is the timestamp for the re-deploy.
+
+#### Final Comments
+
+I know this could be handled in a 30m exercise but I had fun with this and was exploring the use of KinD while also
+setting up the toolchain on a new computer. What it means is you will see there is a `k8s` package that I created in
+here with a bunch of functionality that's not used for this assignment but just is more of an example of the way I
+develop a codebase. Obviously, for the real thing I would remove all uncalled code as it just makes long term
+maintainability more complicated (i.e. is adds "noise").
+
+Also, for absolute narrow scope, I would refactor to just grab Deployments from the start, retrieve references to their
+Pods, filter those by name, and "kick" the Deployments with Pods that match the filter criteria.
+
+The KinD cluster configuration that I used here is dropped in as well along with a brief [README](kind_cluster/README_KinD.md)
+file that explains setup.
+
+---
