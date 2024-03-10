@@ -92,7 +92,7 @@ Requirements:
 - Your script must perform a graceful restart, similar to kubectl rollout restart. Do not just delete pods.
 - You must use Go modules (no vendor directory).
 
->__NOTE:__ Run the app with `go run .` or `go run main.go k8s.go util.go`.
+>__NOTE:__ You should be able to run the app with `go mod init` followed by `go run .` in the root directory.
 
 #### More Notes
 
