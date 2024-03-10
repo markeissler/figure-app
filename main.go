@@ -88,40 +88,6 @@ func createDeployment(ctx context.Context, cs *kubernetes.Clientset, name string
 	return nil
 }
 
-// deployPod will deploy a busybox instance that is named according to the name provided.
-func deployPod(ctx context.Context, cs *kubernetes.Clientset, name string, namespace string) error {
-	finalName := "busybox-" + name
-
-	// Deploy a pod running busybox.
-	newPod := &corev1.Pod{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      finalName,
-			Namespace: namespace,
-			Labels: map[string]string{
-				"app": finalName,
-			},
-		},
-		Spec: corev1.PodSpec{
-			Containers: []corev1.Container{
-				{
-					Name:    "busybox",
-					Image:   "busybox:latest",
-					Command: []string{"sleep", "infinity"},
-				},
-			},
-		},
-	}
-
-	pod, err := fak8s.DeployPod(ctx, cs, newPod, namespace)
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("pod: %s (deployed)\n", pod.Name)
-
-	return nil
-}
-
 // kickFilteredPods will trigger a re-deploy of Pods that are associated with ReplicaSets (that is, they belong to
 // Deployments) and that match the given PodFilter criteria.
 func kickFilteredPods(ctx context.Context, cs *kubernetes.Clientset, filter *fak8s.PodFilter, namespace ...string) error {
