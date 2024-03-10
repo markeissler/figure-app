@@ -1,0 +1,179 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/go-postgres
+{
+    "name": "Go & Kubernetes",
+    "build": {
+        // https://containers.dev/guide/dockerfile
+        "dockerfile": "Dockerfile"
+    },
+    // "dockerComposeFile": "docker-compose.yml",
+    // "service": "app",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    // Features to add to the dev container. More info: https://containers.dev/features.
+    // "features": {},
+    "features": {
+        "ghcr.io/devcontainers-contrib/features/kubectl-asdf:2": {
+            "version": "latest"
+        },
+        "ghcr.io/dhoeric/features/google-cloud-cli:1": {
+            "version": "latest",
+            "installGkeGcloudAuthPlugin": true,
+            // Temp fix for bug...
+            // See: https://github.com/dhoeric/features/issues/22
+            // See: https://github.com/dhoeric/features/pull/21
+            "INSTALL_GKEGCLOUDAUTH_PLUGIN": true
+        }
+    },
+    // Configure tool-specific properties.
+    "customizations": {
+        "vscode": {
+            // Add the IDs of extensions you want installed when the container is created.
+            "extensions": [
+                "davidanson.vscode-markdownlint",
+                "dbaeumer.vscode-eslint",
+                "dkundel.vscode-new-file",
+                "eamodio.gitlens",
+                "editorconfig.editorconfig",
+                "formulahendry.code-runner",
+                "golang.go",
+                "gruntfuggly.todo-tree",
+                "mads-hartmann.bash-ide-vscode",
+                "shardulm94.trailing-spaces",
+                "tomoki1207.selectline-statusbar",
+                // Miscellaneous.
+                "IBM.output-colorizer", // Colorize your output/test logs
+                "aaron-bond.better-comments",
+                "bajdzis.vscode-database", // Supports connections to mysql or postgres, over SSL, socked
+                "bierner.emojisense", // Emoji sense for markdown
+                "ms-azuretools.vscode-docker", // Docker integration and linting
+                "stackbreak.comment-divider",
+                "stkb.rewrap", // rewrap comments after n characters on one line
+                "streetsidesoftware.code-spell-checker",
+                "redhat.vscode-yaml", // Kubernetes, Drone syntax highlighting
+                // JSON additions.
+                "eriklynd.json-tools",
+                "zainchen.json"
+            ],
+            // Set *default* container specific settings.json values on container create.
+            "settings": {
+                // @FIXME: Disable debugger autoAttach and usePreviewfor now.
+                // see: https://github.com/microsoft/vscode/issues/102249
+                "debug.node.autoAttach": "disabled",
+                "debug.toolBarLocation": "docked",
+                "editor.codeActionsOnSave": {},
+                "editor.codeActionsOnSaveTimeout": 500,
+                "editor.detectIndentation": true,
+                "editor.dragAndDrop": true,
+                "editor.formatOnPaste": false,
+                "editor.formatOnSave": true,
+                "editor.formatOnSaveMode": "file",
+                "editor.formatOnType": false,
+                "editor.guides.bracketPairs": true,
+                "editor.insertSpaces": true,
+                "editor.rulers": [
+                    80,
+                    120
+                ],
+                "editor.snippetSuggestions": "top",
+                "editor.tabSize": 4,
+                "editor.wordWrap": "off",
+                "explorer.compactFolders": false,
+                "files.associations": {
+                    ".envrc": "shellscript",
+                    "Dockerfile.*": "dockerfile",
+                    "*.yml.tpl": "yaml"
+                },
+                "files.eol": "\n",
+                "liveServer.settings": {
+                    "port": 5500,
+                    "root": "/doc"
+                },
+                "go.buildTags": "",
+                "go.toolsEnvVars": {
+                    "CGO_ENABLED": "0"
+                },
+                "go.useLanguageServer": true,
+                "go.testEnvVars": {
+                    "CGO_ENABLED": "1"
+                },
+                "go.testFlags": [
+                    "-v",
+                    "-race"
+                ],
+                "go.testTimeout": "10s",
+                "go.coverOnSingleTest": true,
+                "go.coverOnSingleTestFile": true,
+                "go.coverOnTestPackage": true,
+                "go.lintTool": "golangci-lint",
+                "go.lintOnSave": "package",
+                "[go]": {
+                    "editor.codeActionsOnSave": {
+                        "source.organizeImports": true
+                    }
+                },
+                "gopls": {
+                    "usePlaceholders": false,
+                    "staticcheck": true,
+                    "vulncheck": "Imports"
+                },
+                "markdownlint.config": {
+                    "MD013": false,
+                    "MD033": false
+                },
+                "remote.extensionKind": {
+                    "ms-azuretools.vscode-docker": "workspace"
+                },
+                "terminal.integrated.profiles.linux": {
+                    "bash": {
+                        "path": "/bin/bash",
+                        "args": [
+                            "-i"
+                        ],
+                        "icon": "terminal-bash"
+                    }
+                },
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "todo-tree.general.tags": [
+                    "BUG",
+                    "@BUG",
+                    "HACK",
+                    "@HACK",
+                    "FIXME",
+                    "@FIXME",
+                    "TODO",
+                    "@TODO",
+                    "[ ]",
+                    "[x]"
+                ],
+                "todo-tree.highlights.defaultHighlight": {
+                    "type": "tag",
+                    "foreground": "#0006F8",
+                    "gutterIcon": true
+                },
+                // Language settings.
+                "[markdown]": {
+                    "editor.wordWrap": "off",
+                    "editor.quickSuggestions": {
+                        "other": "on",
+                        "comments": "off",
+                        "strings": "off"
+                    }
+                },
+                // Miscellaneous.
+                "telemetry.telemetryLevel": "off"
+            }
+        }
+    },
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [5432],
+    // Mount .ssh directory inside container.
+    "mounts": [
+        "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/vscode/.ssh,readonly,type=bind"
+    ],
+    // Use 'postCreateCommand' to run commands after the container is created.
+    // "postCreateCommand": "go version",
+    // Add workspace folder to git safe.directory so git stops complaining about ownership mis-matches.
+    "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}"
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    // "remoteUser": "root"
+}

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+# Correct `kind` value "Deploy" -> "Deployment"
+kind: Deployment
+metadata:
+  name: nginx-deploy
+  labels:
+    app: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        # Correct image tag: "nginx:current" -> "nginx:latest"
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        # Set resource limits to:
+        # - cpu: 0.5 CPU cores
+        # - memory: 256 Mebibytes
+        # Set request limits to:
+        # - cpu: 0.2 CPU cores
+        # - memory: 128 Mebibytes
+        #
+        # NOTE: If you set the limit higher than the request, you will be subject to pod eviction if the request exceeds
+        # the defined limit. The request only represents the initial (or minimum) amount of memory that the pod needs in
+        # order to be scheduled on a node.
+        #
+        # For cpu, it is generally inadvisable to set a limit in most cases because it will throttle your application in
+        # times when adequate cpu headroom is available. The cpu request is used by the scheduler to job placement.
+        resources:
+          limits:
+            cpu: "500m"    # 0.5 CPU cores
+            memory: "256Mi"  # 256 Mebibytes
+          requests:
+            cpu: "200m"    # 0.2 CPU cores
+            memory: "128Mi"  # 128 Mebibytes
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+  type: ClusterIP

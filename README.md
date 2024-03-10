@@ -1,6 +1,6 @@
-# Welcome 
+# Welcome
 
-Welcome to Figure's DevOps skills assessment! 
+Welcome to Figure's DevOps skills assessment!
 
 The goal of this assessment is to get an idea of how you work and your ability to speak in depth about the details in your work. Generally, this assessment should not take you longer than 30 minutes to complete. 
 
@@ -16,16 +16,19 @@ Your answers will be reviewed with you in a subsequent interview.
 
 ### Kubernetes
 
-1. Fix the issues with this Kubernetes manifest to ensure it is ready for deployment. 
+1. Fix the issues with this Kubernetes manifest to ensure it is ready for deployment.
 2. Add the following limits and requests to the manifest:
 - CPU limit of 0.5 CPU cores
 - Memory limit of 256 Mebibytes
 - CPU request of 0.2 CPU cores
-- Memory request of 128 Mebibytes 
+- Memory request of 128 Mebibytes
+
+>__NOTE:__ Corrected manifest appears below. Also included as [k8s_nginx_deploy_fixed.yml](k8s_nginx_deploy_fixed.yml).
 
 ```yaml
 apiVersion: apps/v1
-kind: Deploy
+# Correct `kind` value "Deploy" -> "Deployment"
+kind: Deployment
 metadata:
   name: nginx-deploy
   labels:
@@ -41,9 +44,30 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:current
+        # Correct image tag: "nginx:current" -> "nginx:latest"
+        image: nginx:latest
         ports:
         - containerPort: 80
+        # Set resource limits to:
+        # - cpu: 0.5 CPU cores
+        # - memory: 256 Mebibytes
+        # Set request limits to:
+        # - cpu: 0.2 CPU cores
+        # - memory: 128 Mebibytes
+        #
+        # NOTE: If you set the limit higher than the request, you will be subject to pod eviction if the request exceeds
+        # the defined limit. The request only represents the initial (or minimum) amount of memory that the pod needs in
+        # order to be scheduled on a node.
+        #
+        # For cpu, it is generally inadvisable to set a limit in most cases because it will throttle your application in
+        # times when adequate cpu headroom is available. The cpu request is used by the scheduler to job placement.
+        resources:
+          limits:
+            cpu: "500m"    # 0.5 CPU cores
+            memory: "256Mi"  # 256 Mebibytes
+          requests:
+            cpu: "200m"    # 0.2 CPU cores
+            memory: "128Mi"  # 128 Mebibytes
 ---
 apiVersion: v1
 kind: Service
@@ -67,3 +91,5 @@ Requirements:
 - You must use the [client-go](https://github.com/kubernetes/client-go) library.
 - Your script must perform a graceful restart, similar to kubectl rollout restart. Do not just delete pods.
 - You must use Go modules (no vendor directory).
+
+>__NOTE:__ Run the app with `go run .` or `go run main.go k8s.go util.go`.

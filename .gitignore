@@ -1,0 +1,34 @@
+# git repo
+.git
+
+# ide support (in general)
+.env*
+!.env.sample
+!.envrc
+/.idea/
+/.vscode/*
+!/.vscode/*.sample.json
+!/.vscode/*.sample
+
+# Ignore all logfiles and tempfiles.
+logs
+*.log
+log/
+!/log/.keep
+
+# Temporary files
+tmp/
+!/tmp/.keep
+
+# env customization
+.env
+.env.local
+
+# private keys and certs
+*_key.json
+*_secret.json
+**/.keys/*
+**/certs/*
+
+# miscellaneous
+**/.DS_Store
