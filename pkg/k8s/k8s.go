@@ -37,7 +37,7 @@ func contextWithTimeout(ctx context.Context, timeout time.Duration) (context.Con
 }
 
 // CreateDeployment creates the provided Deployment in the identified namespace.
-func CreateDeployment(ctx context.Context, cs *kubernetes.Clientset, deployment *appsv1.Deployment, namespace string) (*appsv1.Deployment, error) {
+func CreateDeployment(ctx context.Context, cs kubernetes.Interface, deployment *appsv1.Deployment, namespace string) (*appsv1.Deployment, error) {
 	// Apply a timeout to context if none exists.
 	if context, cancel := contextWithTimeout(ctx, DefaultTimeout); cancel != nil {
 		ctx = context
@@ -64,7 +64,7 @@ func CreateDeployment(ctx context.Context, cs *kubernetes.Clientset, deployment 
 }
 
 // DeployPod deploys the provided Pod into the identified namespace.
-func DeployPod(ctx context.Context, cs *kubernetes.Clientset, pod *corev1.Pod, namespace string) (*corev1.Pod, error) {
+func DeployPod(ctx context.Context, cs kubernetes.Interface, pod *corev1.Pod, namespace string) (*corev1.Pod, error) {
 	// Apply a timeout to context if none exists.
 	if context, cancel := contextWithTimeout(ctx, DefaultTimeout); cancel != nil {
 		ctx = context
@@ -91,7 +91,7 @@ func DeployPod(ctx context.Context, cs *kubernetes.Clientset, pod *corev1.Pod, n
 }
 
 // GetDeployment retrieves the Deployment identified by name and namespace.
-func GetDeployment(ctx context.Context, cs *kubernetes.Clientset, name string, namespace string) (*appsv1.Deployment, error) {
+func GetDeployment(ctx context.Context, cs kubernetes.Interface, name string, namespace string) (*appsv1.Deployment, error) {
 	// Apply a timeout to context if none exists.
 	if context, cancel := contextWithTimeout(ctx, DefaultTimeout); cancel != nil {
 		ctx = context
@@ -103,7 +103,7 @@ func GetDeployment(ctx context.Context, cs *kubernetes.Clientset, name string, n
 
 // GetDeployments retrieves all Deployments for the optional namespace provided or across all namespaces if none is
 // provided. Only the first namespace will be used if more than one is provided.
-func GetDeployments(ctx context.Context, cs *kubernetes.Clientset, namespace ...string) ([]appsv1.Deployment, error) {
+func GetDeployments(ctx context.Context, cs kubernetes.Interface, namespace ...string) ([]appsv1.Deployment, error) {
 	// Apply a timeout to context if none exists.
 	if context, cancel := contextWithTimeout(ctx, DefaultTimeout); cancel != nil {
 		ctx = context
@@ -121,7 +121,7 @@ func GetDeployments(ctx context.Context, cs *kubernetes.Clientset, namespace ...
 }
 
 // GetDeploymentsForPods retrieves all Deployments associated with the collection of Pods provided.
-func GetDeploymentsForPods(ctx context.Context, cs *kubernetes.Clientset, pods []corev1.Pod) ([]appsv1.Deployment, error) {
+func GetDeploymentsForPods(ctx context.Context, cs kubernetes.Interface, pods []corev1.Pod) ([]appsv1.Deployment, error) {
 	// Apply a timeout to context if none exists.
 	if context, cancel := contextWithTimeout(ctx, LongerTimeout); cancel != nil {
 		ctx = context
@@ -147,7 +147,7 @@ func GetDeploymentsForPods(ctx context.Context, cs *kubernetes.Clientset, pods [
 }
 
 // GetDeploymentForRecplicaSet retrieves the Deployment associated with the ReplicaSet provided.
-func GetDeploymentForReplicaSet(ctx context.Context, cs *kubernetes.Clientset, rs appsv1.ReplicaSet) (*appsv1.Deployment, error) {
+func GetDeploymentForReplicaSet(ctx context.Context, cs kubernetes.Interface, rs appsv1.ReplicaSet) (*appsv1.Deployment, error) {
 	// Apply a timeout to context if none exists.
 	if context, cancel := contextWithTimeout(ctx, DefaultTimeout); cancel != nil {
 		ctx = context
@@ -164,7 +164,7 @@ func GetDeploymentForReplicaSet(ctx context.Context, cs *kubernetes.Clientset, r
 }
 
 // GetNodes retrieves all Nodes in the current cluster.
-func GetNodes(ctx context.Context, cs *kubernetes.Clientset) ([]corev1.Node, error) {
+func GetNodes(ctx context.Context, cs kubernetes.Interface) ([]corev1.Node, error) {
 	// Apply a timeout to context if none exists.
 	if context, cancel := contextWithTimeout(ctx, DefaultTimeout); cancel != nil {
 		ctx = context
@@ -181,13 +181,13 @@ func GetNodes(ctx context.Context, cs *kubernetes.Clientset) ([]corev1.Node, err
 
 // GetPods retrieves all Pods for the optional namespace provided or across all namespaces if none is provided. Only the
 // first namespace will be used if more than one is provided.
-func GetPods(ctx context.Context, cs *kubernetes.Clientset, namespace ...string) ([]corev1.Pod, error) {
+func GetPods(ctx context.Context, cs kubernetes.Interface, namespace ...string) ([]corev1.Pod, error) {
 	return GetPodsWithFilter(ctx, cs, nil, namespace...)
 }
 
 // GetPodsWithFilter retrieves all Pods for the optional namespace provided or across all namespaces if none is
 // provided. The returned results are filtered to only include Pods that match the provided PodFilter specification.
-func GetPodsWithFilter(ctx context.Context, cs *kubernetes.Clientset, filter *PodFilter, namespace ...string) ([]corev1.Pod, error) {
+func GetPodsWithFilter(ctx context.Context, cs kubernetes.Interface, filter *PodFilter, namespace ...string) ([]corev1.Pod, error) {
 	// Apply a timeout to context if none exists.
 	if context, cancel := contextWithTimeout(ctx, DefaultTimeout); cancel != nil {
 		ctx = context
@@ -217,7 +217,7 @@ func GetPodsWithFilter(ctx context.Context, cs *kubernetes.Clientset, filter *Po
 }
 
 // GetReplicaSet retrieves the ReplicaSet identified by name and namespace.
-func GetReplicaSet(ctx context.Context, cs *kubernetes.Clientset, name string, namespace string) (*appsv1.ReplicaSet, error) {
+func GetReplicaSet(ctx context.Context, cs kubernetes.Interface, name string, namespace string) (*appsv1.ReplicaSet, error) {
 	// Apply a timeout to context if none exists.
 	if context, cancel := contextWithTimeout(ctx, DefaultTimeout); cancel != nil {
 		ctx = context
@@ -228,7 +228,7 @@ func GetReplicaSet(ctx context.Context, cs *kubernetes.Clientset, name string, n
 }
 
 // GetReplicaSetForPod retrieves the ReplicaSet associated with the Pod provided.
-func GetReplicaSetForPod(ctx context.Context, cs *kubernetes.Clientset, pod corev1.Pod) (*appsv1.ReplicaSet, error) {
+func GetReplicaSetForPod(ctx context.Context, cs kubernetes.Interface, pod corev1.Pod) (*appsv1.ReplicaSet, error) {
 	// Apply a timeout to context if none exists.
 	if context, cancel := contextWithTimeout(ctx, DefaultTimeout); cancel != nil {
 		ctx = context
@@ -247,7 +247,7 @@ func GetReplicaSetForPod(ctx context.Context, cs *kubernetes.Clientset, pod core
 // KickDeployments forces a re-deployment of the Deployments provided. The re-deployment patches the Deployments with
 // an updated annotation which triggers a graceful replacement of Pods as new resources are created before the old ones
 // are terminated similar to a rollout restart.
-func KickDeployments(ctx context.Context, cs *kubernetes.Clientset, deployments []appsv1.Deployment) ([]appsv1.Deployment, error) {
+func KickDeployments(ctx context.Context, cs kubernetes.Interface, deployments []appsv1.Deployment) ([]appsv1.Deployment, error) {
 	// Apply a timeout to context if none exists.
 	if context, cancel := contextWithTimeout(ctx, LongerTimeout); cancel != nil {
 		ctx = context
@@ -289,7 +289,7 @@ func KickDeployments(ctx context.Context, cs *kubernetes.Clientset, deployments 
 // This functionality will have to be implemented with a manual pattern that might mimic `kickDeployments()` perhaps by
 // creating new Pods before terminating olds ones? The goal would not be to duplicate `kickDeployments()` (Pods that
 // are backed by ReplicaSets should be handled that way) but to replace Pods that have been deployed ad-hoc.
-func KickPods(ctx context.Context, cs *kubernetes.Clientset, pods []corev1.Pod) ([]corev1.Pod, error) {
+func KickPods(ctx context.Context, cs kubernetes.Interface, pods []corev1.Pod) ([]corev1.Pod, error) {
 	// Apply a timeout to context if none exists.
 	if context, cancel := contextWithTimeout(ctx, LongerTimeout); cancel != nil {
 		ctx = context
